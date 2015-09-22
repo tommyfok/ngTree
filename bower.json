@@ -1,0 +1,21 @@
+{
+  "name": "ngTree",
+  "main": "ngTree.js",
+  "version": "0.1.0",
+  "homepage": "https://github.com/tommyfok/ngTree",
+  "authors": [
+    "tommyfok <154274174@qq.com>"
+  ],
+  "description": "angular tree component",
+  "keywords": [
+    "tree"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
