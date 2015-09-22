@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html ng-app="myTest">
+<head>
+  <title>test</title>
+  <meta charset="utf-8">
+  <style>
+    body{
+      padding: 10px;
+    }
+  </style>
+</head>
+<body ng-controller="TestCtrl">
+<div ng-tree="data" ng-tree-click="handleClick"></div>
+</body>
+<script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular.min.js"></script>
+<script src="../ngTree.js"></script>
+<script>
+angular.module('myTest', ['ngTree'])
+.controller('TestCtrl', function ($scope) {
+  $scope.data = [
+    {text: 'nochild'},
+    {
+      text: '测试菜单',
+      children: [
+        {text: '123'},
+        {text: '123123123'}
+      ]
+    },
+    {
+      text: 'watchout',
+      show: true,
+      children: [
+        {text: '123'},
+        {text: '123123123'},
+        {
+          text: '还有哦',
+          children: [{text: 'heheda'}]
+        }
+      ]
+    },
+    {
+      text: 'tesa',
+      children: [
+        {text: '123'},
+        {text: '123123123'}
+      ]
+    }
+  ];
+
+  $scope.handleClick = function (item, parent) {
+    item.children = item.children || [];
+    item.children.push({text: 'iamatest'});
+  };
+});
+</script>
+</html>
