@@ -10,7 +10,7 @@
   </style>
 </head>
 <body ng-controller="TestCtrl">
-<div ng-tree="data" ng-tree-click="handleClick"></div>
+<div ng-tree="data"></div>
 </body>
 <script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular.min.js"></script>
 <script src="../ngTree.js"></script>
@@ -46,11 +46,6 @@ angular.module('myTest', ['ngTree'])
       ]
     }
   ];
-
-  $scope.handleClick = function (item, parent) {
-    item.children = item.children || [];
-    item.children.push({text: 'iamatest'});
-  };
 });
 </script>
 </html>

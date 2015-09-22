@@ -1,6 +1,6 @@
 var ngTreeTpl = ''
 +'<li class="ngTree" ng-repeat="child in parent" ng-class="{hasChild: child.children.length, opened: child.ngTreeShow}">'
-+'  <a ng-bind="child.text" ng-click="handleItem(child)"></a>'
++'  <a ng-bind="child.text" ng-click="clickItem(child)"></a>'
 +'  <ul ng-show="child.ngTreeShow" ng-if="child.children.length" ng-include="\'ngTreeTpl\'" ng-init="parent=child.children"></ul>'
 +'</li>';
 
@@ -18,6 +18,7 @@ angular.module('ngTree', [])
 .directive('ngTree', function () {
   return {
     restrict: 'AE',
+    require: ['?ngModel'],
     scope: {
       parent: '=ngTree',
       onclick: '=ngTreeClick'
@@ -25,11 +26,13 @@ angular.module('ngTree', [])
     template: ngTreeTpl + ngTreeStyle,
     link: function (scope, elem) {
       elem.addClass('ngTree');
-      scope.handleItem = function (item) {
+      scope.clickItem = function (item) {
         if (item.children) {
           item.ngTreeShow = !item.ngTreeShow;
         } else {
-          scope.onclick(item, scope.parent);
+          if (angular.isFunction(scope.onclick)) {
+            scope.onclick(item, scope.parent);
+          }
         }
       }
     }
