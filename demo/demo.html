@@ -4,48 +4,95 @@
   <title>test</title>
   <meta charset="utf-8">
   <style>
+  *{margin: 0; padding: 0;}
     body{
       padding: 10px;
+      font-size: 14px;
+    }
+    ul,li{
+      list-style: none;
     }
   </style>
+  <link rel="stylesheet" href="../ng.tree.css">
 </head>
 <body ng-controller="TestCtrl">
-<div ng-tree="data"></div>
+<ul ng-tree="data" conf="conf" ng-tree-instance="tree"></ul>
+<br><br><br>
+<input type="button" value="添加节点" ng-click="addNode()">
+<input type="button" value="删除节点" ng-click="removeNode()">
+
+<input type="button" value="获取选中的节点" ng-click="getSelected()">
+
+<div id="selectedBox"></div>
 </body>
 <script src="http://apps.bdimg.com/libs/angular.js/1.4.0-beta.4/angular.min.js"></script>
 <script src="../ngTree.js"></script>
 <script>
 angular.module('myTest', ['ngTree'])
-.controller('TestCtrl', function ($scope) {
+.controller('TestCtrl', function ($scope, $timeout) {
+  $scope.conf = {
+    idAttribute: 'id',
+    hasCheckbox: true
+  };
   $scope.data = [
-    {text: 'nochild'},
     {
-      text: '测试菜单',
-      children: [
-        {text: '123'},
-        {text: '123123123'}
-      ]
+      text: 'node-1',
+      id: '1',
+      parent: '#',
+      opened: false
     },
     {
-      text: 'watchout',
-      show: true,
-      children: [
-        {text: '123'},
-        {text: '123123123'},
-        {
-          text: '还有哦',
-          children: [{text: 'heheda'}]
-        }
-      ]
+      text: 'node-2',
+      id: '2',
+      parent: '#',
+      opened: true
     },
     {
-      text: 'tesa',
-      children: [
-        {text: '123'},
-        {text: '123123123'}
-      ]
+      text: 'node-1-1',
+      id: '1-1',
+      parent: '1'
+    },
+    {
+      text: 'node-1-2',
+      id: '1-2',
+      parent: '1',
+      opened: false
+    },
+    {
+      text: 'node-1-2-1',
+      id: '1-2-1',
+      parent: '1-2',
+    },
+    {
+      text: 'node-2-1',
+      id: '2-1',
+      parent: '2',
+    },
+    {
+      text: 'node-2-2',
+      id: '2-2',
+      parent: '2',
     }
   ];
+
+    $scope.addNode = function(){
+        var d = new Date().getTime() + '';
+        $scope.tree.addNode({
+            text: 'node-' + d,
+            id: d,
+            parent: '#',
+        });
+    };
+
+    $scope.removeNode = function(){
+        $scope.tree.removeNode('1')
+    };
+
+    $scope.getSelected = function(){
+        var selected = $scope.tree.getSelected();
+        document.getElementById('selectedBox').innerHTML = JSON.stringify(selected);
+    };
+
 });
 </script>
 </html>
