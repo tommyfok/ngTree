@@ -1,6 +1,6 @@
 {
   "name": "ngTree",
-  "main": "ngTree.js",
+  "main": ["ngTree.js", "ngTree.css"],
   "version": "0.1.0",
   "homepage": "https://github.com/tommyfok/ngTree",
   "authors": [

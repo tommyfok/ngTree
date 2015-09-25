@@ -17,7 +17,7 @@ if (!document.getElementById('ngTreeTpl')) {
 }
 
 angular.module('ngTree', [])
-.directive('ngTree', function () {
+.directive('ngTree', function() {
 	return {
 		restrict: 'AE',
 		scope: {
@@ -27,31 +27,32 @@ angular.module('ngTree', [])
 			inst: '=ngTreeInstance'
 		},
 		template: ngTreeTpl,
-		link: function (scope, elem) {
+		link: function(scope, elem) {
 			scope.inst = scope.inst || {};
 
-		  	elem.addClass('tree-container');
+			elem.addClass('tree-container');
 
-		  	scope.$watchCollection('data', function () {
+			scope.$watchCollection('data', function() {
 				scope.parent = dataProcess(angular.copy(scope.data));
 			});
 
-	  		//平面化的数据结构 to 树形数据结构
-		  	function dataProcess(data){
+			//平面化的数据结构 to 树形数据结构
+
+			function dataProcess(data) {
 				var arrs = [];
 
-				angular.forEach(data,function(o,i){
+				angular.forEach(data, function(o, i) {
 					var id = o.id;
 
-				  	angular.forEach(data,function(m,j){
-						if(id == m.parent){
-							if(!o.child){
+					angular.forEach(data, function(m, j) {
+						if (id == m.parent) {
+							if (!o.child) {
 								o.child = [];
 							}
 							o.child.push(m);
 						}
 					});
-				  	if(o.parent == '#'){
+					if (o.parent == '#') {
 						arrs.push(o);
 					}
 				});
@@ -61,34 +62,35 @@ angular.module('ngTree', [])
 				return arrs;
 			};
 
-		  	//树形数据结构 to 平面化的数据结构
-		  	function reversionData(data){
+			//树形数据结构 to 平面化的数据结构
+
+			function reversionData(data) {
 				var arrs = [];
 
-				(function(d){
-			  		var r = arguments.callee;
-			  		angular.forEach(d,function(o,i){
+				(function(d) {
+					var r = arguments.callee;
+					angular.forEach(d, function(o, i) {
 						var child = o.child
-						if(child && child.length){
-				  			delete o.child;
-				  			arrs.push(o);
-				  			r(child);
-			  			}else{
-				  			arrs.push(o);
-			  			}
-		  			});
-		  		})(data);
+						if (child && child.length) {
+							delete o.child;
+							arrs.push(o);
+							r(child);
+						} else {
+							arrs.push(o);
+						}
+					});
+				})(data);
 
-		  		return arrs;
-	  		}
+				return arrs;
+			}
 
-	  		scope.currentSelected = null;
+			scope.currentSelected = null;
 
-			scope.select = function (item, items) {
+			scope.select = function(item, items) {
 				//单选
-	  			if(!scope.conf.hasCheckbox){
-			  		//重置之前选中的节点
-			  		if(scope.currentSelected){
+				if (!scope.conf.hasCheckbox) {
+					//重置之前选中的节点
+					if (scope.currentSelected) {
 						scope.currentSelected.checked = false;
 					}
 
@@ -96,16 +98,16 @@ angular.module('ngTree', [])
 					item.checked = true;
 				}
 				//多选
-				else{
+				else {
 					item.checked = !item.checked;
 					item.mixin = false;
 
-			  		//处理子节点状态
-			  		var _data = changeChildStatus(item);
-			  		
-			  		//处理父节点状态
-			  		changeParentStatus(item,_data);
-			  		
+					//处理子节点状态
+					var _data = changeChildStatus(item);
+
+					//处理父节点状态
+					changeParentStatus(item, _data);
+
 				}
 
 				//点击节点的回调
@@ -114,23 +116,23 @@ angular.module('ngTree', [])
 				}
 			};
 
-			function changeChildStatus(item){
+			function changeChildStatus(item) {
 				var data = reversionData(scope.parent);
-				(function(id,checked){
+				(function(id, checked) {
 					var r = arguments.callee;
-					angular.forEach(data,function(o,i){
-			  			if(id == o.parent){
-			  				o.checked = checked;
-			  				r(o.id,checked);
-			  			}
-			  		});
-				})(item.id,item.checked);
-				
+					angular.forEach(data, function(o, i) {
+						if (id == o.parent) {
+							o.checked = checked;
+							r(o.id, checked);
+						}
+					});
+				})(item.id, item.checked);
+
 				return data;
 			}
 
-			function changeParentStatus(item,data){
-				if(item.parent == '#'){
+			function changeParentStatus(item, data) {
+				if (item.parent == '#') {
 					scope.data = data;
 					return;
 				}
@@ -138,33 +140,33 @@ angular.module('ngTree', [])
 
 				//先收集父节点
 				var parents = [];
-				(function(parentId){
+				(function(parentId) {
 					var r = arguments.callee;
-					angular.forEach(data,function(o,i){
-			  			if(parentId == o.id){
-			  				parents.push(o);
-			  				r(o.parent);
-			  			}
-			  		});
+					angular.forEach(data, function(o, i) {
+						if (parentId == o.id) {
+							parents.push(o);
+							r(o.parent);
+						}
+					});
 				})(item.parent);
 
 				var mixin = false;
 				//再看看父节点下的子节点的checked情况
-				angular.forEach(parents,function(o,i){
+				angular.forEach(parents, function(o, i) {
 					var id = o.id;
 					var _checked = [];
-					angular.forEach(data,function(m,j){
-						if(id == m.parent){
+					angular.forEach(data, function(m, j) {
+						if (id == m.parent) {
 							_checked.push(m.checked || false);
 						}
 					});
 
 					var _checkedStr = _checked.join('');
 
-					if(/true/.test(_checkedStr) && /false/.test(_checkedStr)){
+					if (/true/.test(_checkedStr) && /false/.test(_checkedStr)) {
 						o.mixin = true;
 						o.checked = false;
-					}else{
+					} else {
 						o.mixin = false;
 						o.checked = checked;
 					}
@@ -173,36 +175,35 @@ angular.module('ngTree', [])
 				scope.data = data;
 			}
 
-			scope.mouseenter = function (item) {
+			scope.mouseenter = function(item) {
 				item.hovered = true;
 			};
 
-			scope.mouseleave = function (item) {
+			scope.mouseleave = function(item) {
 				item.hovered = false;
 			};
 
-			scope.open = function (item, isLast){
-				var parentClass = scope.liClass(item,isLast);
-				if(/leaf/.test(parentClass)){
+			scope.open = function(item, isLast) {
+				var parentClass = scope.liClass(item, isLast);
+				if (/leaf/.test(parentClass)) {
 					return;
-		  		}
+				}
 				item.opened = /closed/.test(parentClass);
 			};
 
-
-			scope.liClass = function (item, isLast){
+			scope.liClass = function(item, isLast) {
 				var className = '';
-				if(item.child && item.child.length){
-					if(item.opened){
+				if (item.child && item.child.length) {
+					if (item.opened) {
 						className = 'tree-open';
-					}else{
+					} else {
 						className = 'tree-closed';
 					}
-				}else{
+				} else {
 					className = 'tree-leaf';
 				}
 
-				if(isLast){
+				if (isLast) {
 					className += ' tree-last'
 				}
 
@@ -212,54 +213,52 @@ angular.module('ngTree', [])
 			//面向业务的方法
 			//
 			//
-		  	scope.inst = {
+			scope.inst = {
 				//新增节点
-				addNode: function (node) {
+				addNode: function(node) {
 					var data = reversionData(scope.parent);
 					data.push(node);
 
 					scope.data = data;
-			  	},
+				},
 
 				//删除节点
-				removeNode: function (nodeId) {
+				removeNode: function(nodeId) {
 					var data = reversionData(scope.parent);
 					var ids = [];
 
-					(function(id, isr){
+					(function(id, isr) {
 						var r = arguments.callee;
-						angular.forEach(data,function(o,i){
-							if(o.id == id && !isr){
+						angular.forEach(data, function(o, i) {
+							if (o.id == id && !isr) {
 								ids.push(i);
-							}else if(o.parent == id){
+							} else if (o.parent == id) {
 								ids.push(i);
 								r(o.id, true);
 							}
 						});
 					})(nodeId);
 
-					angular.forEach(ids,function(v,i){
-						data.splice(v-i,1);
+					angular.forEach(ids, function(v, i) {
+						data.splice(v - i, 1);
 					});
 
 					scope.data = data;
 				},
 
 				//获取选中的节点
-				getSelected: function(){
-					if(!scope.conf.hasCheckbox){
+				getSelected: function() {
+					if (!scope.conf.hasCheckbox) {
 						return scope.currentSelected;
 					}
 
 					var data = reversionData(angular.copy(scope.parent));
 					var arrs = [];
-					angular.forEach(data,function(o,i){
-						if(o.checked){
+					angular.forEach(data, function(o, i) {
+						if (o.checked) {
 							arrs.push(o);
 						}
 					});
-
-
 
 					return arrs;
 				}
