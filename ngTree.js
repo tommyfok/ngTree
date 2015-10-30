@@ -23,7 +23,7 @@ angular.module('ngTree', [])
 		scope: {
 			data: '=ngTree',
 			onclick: '=ngTreeClick',
-			conf: '=',
+			conf: '=ngTreeConfig',
 			inst: '=ngTreeInstance'
 		},
 		template: ngTreeTpl,
