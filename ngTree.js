@@ -8,15 +8,10 @@ var ngTreeTpl = ''
 	+'<ul ng-show="child.opened" ng-if="child.child && child.child.length" ng-include="\'ngTreeTpl\'" ng-init="parent=child.child"></ul>'
 +'</li>';
 
-if (!document.getElementById('ngTreeTpl')) {
-	var ngTreeTplScript = document.createElement('script');
-	ngTreeTplScript.id = 'ngTreeTpl';
-	ngTreeTplScript.type= 'text/ng-template';
-	ngTreeTplScript.innerHTML = ngTreeTpl;
-	document.body.appendChild(ngTreeTplScript);
-}
-
 angular.module('ngTree', [])
+.run(function ($templateCache) {
+  $templateCache.put('ngTreeTpl', ngTreeTpl);
+})
 .directive('ngTree', function() {
 	return {
 		restrict: 'AE',
